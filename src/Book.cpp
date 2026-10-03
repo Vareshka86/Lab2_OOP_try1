@@ -3,7 +3,7 @@
  * @brief Реализация класса Book.
  * @author Vareshka86
  * @date 2026-10-03
- * @version 0.1
+ * @version 0.2
  */
 
 #include "Book.h"
@@ -11,6 +11,10 @@
 
 #include <iostream>
 #include <stdexcept>
+
+// Определение статического поля: оно одно на всю программу, общее для всех книг.
+// В C++14 статическое поле объявляется в классе, а определяется здесь, в .cpp.
+int Book::count_ = 0;
 
 Book::Book()
     : title_("Без названия"),
@@ -21,6 +25,9 @@ Book::Book()
       issueCount_(0),
       isWrittenOff_(false)
 {
+    ++count_;
+    std::cout << "  [+] Создана книга «" << title_ << "» (конструктор по умолчанию). Книг сейчас: "
+              << count_ << '\n';
 }
 
 Book::Book(const std::string& title, const Author& author, int year)
@@ -51,6 +58,13 @@ Book::Book(const std::string& title, const Author& author, int year)
                                     " не позже года рождения автора " +
                                     std::to_string(author_.getBirthYear()));
     }
+
+    // Счётчик увеличивается только после всех проверок: если конструктор бросил
+    // исключение, объект не создан и считать его нельзя (деструктор для него
+    // тоже не вызывается)
+    ++count_;
+    std::cout << "  [+] Создана книга «" << title_ << "» (конструктор с параметрами). Книг сейчас: "
+              << count_ << '\n';
 }
 
 Book::Book(const Book& other)
@@ -62,7 +76,23 @@ Book::Book(const Book& other)
       issueCount_(other.issueCount_),
       isWrittenOff_(other.isWrittenOff_)
 {
-    // Копия корректной книги тоже корректна - проверять нечего
+    // Копия корректной книги тоже корректна - проверять нечего. Но это новый
+    // объект, поэтому счётчик увеличивается
+    ++count_;
+    std::cout << "  [+] Создана книга «" << title_ << "» (конструктор копирования). Книг сейчас: "
+              << count_ << '\n';
+}
+
+Book::~Book()
+{
+    --count_;
+    std::cout << "  [-] Уничтожена книга «" << title_ << "» (деструктор). Книг сейчас: "
+              << count_ << '\n';
+}
+
+int Book::getCount()
+{
+    return count_;
 }
 
 const std::string& Book::getTitle() const
@@ -120,4 +150,60 @@ void Book::print() const
     }
     std::cout << '\n'
               << "  Число выдач:  " << issueCount_ << '\n';
+}
+
+bool Book::issueTo(const std::string& reader)
+{
+    // Сначала все проверки: при отказе ни одно поле не должно измениться
+    if (isWrittenOff_)
+    {
+        std::cout << "  Отказ: книга «" << title_ << "» списана, её нельзя выдать.\n";
+        return false;
+    }
+    if (isIssued_)
+    {
+        std::cout << "  Отказ: книга «" << title_ << "» уже у читателя (" << readerName_ << ").\n";
+        return false;
+    }
+    if (reader.empty())
+    {
+        std::cout << "  Отказ: не указано имя читателя.\n";
+        return false;
+    }
+
+    isIssued_ = true;
+    readerName_ = reader;
+    ++issueCount_;
+    return true;
+}
+
+bool Book::returnBook()
+{
+    if (!isIssued_)
+    {
+        std::cout << "  Отказ: книга «" << title_ << "» не выдана — возвращать нечего.\n";
+        return false;
+    }
+
+    isIssued_ = false;
+    readerName_.clear(); // книга на полке ни на кого не записана (инвариант 3)
+    return true;
+}
+
+bool Book::writeOff()
+{
+    if (isWrittenOff_)
+    {
+        std::cout << "  Отказ: книга «" << title_ << "» уже списана.\n";
+        return false;
+    }
+    if (isIssued_)
+    {
+        std::cout << "  Отказ: книга «" << title_ << "» у читателя (" << readerName_
+                  << "), сначала её нужно вернуть.\n";
+        return false;
+    }
+
+    isWrittenOff_ = true;
+    return true;
 }
