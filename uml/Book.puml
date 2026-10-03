@@ -1,0 +1,61 @@
+@startuml
+title Диаграмма классов: Book и Author (вариант 5)
+skinparam classAttributeIconSize 0
+hide empty members
+
+class Book {
+  - title_ : std::string
+  - author_ : Author
+  - year_ : int
+  - isIssued_ : bool
+  - readerName_ : std::string
+  - issueCount_ : int
+  - isWrittenOff_ : bool
+  - {static} count_ : int
+  --
+  + {static} MIN_YEAR : int = 1450
+  + Book()
+  + Book(title : std::string, author : Author, year : int)
+  + Book(other : Book)
+  + ~Book()
+  .. методы чтения (const) ..
+  + getTitle() : std::string
+  + getAuthor() : Author
+  + getYear() : int
+  + isIssued() : bool
+  + getReaderName() : std::string
+  + getIssueCount() : int
+  + isWrittenOff() : bool
+  + print() : void
+  + {static} getCount() : int
+  .. методы изменения ..
+  + issueTo(reader : std::string) : bool
+  + returnBook() : bool
+  + writeOff() : bool
+}
+
+class Author {
+  - name_ : std::string
+  - birthYear_ : int
+  --
+  + {static} UNKNOWN_BIRTH_YEAR : int = 0
+  + Author()
+  + Author(name : std::string, birthYear : int)
+  + getName() : std::string
+  + getBirthYear() : int
+  + hasBirthYear() : bool
+  + toString() : std::string
+}
+
+Book *-- "1" Author : author_
+
+note right of Book
+  Инварианты:
+  1. название не пустое;
+  2. 1450 <= год издания <= текущий год,
+     год издания > год рождения автора;
+  3. выдана <=> есть имя читателя;
+  4. списанная книга не выдана;
+  5. число выдач >= 0.
+end note
+@enduml
