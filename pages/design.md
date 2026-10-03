@@ -41,9 +41,10 @@
 
 ## Диаграмма классов
 
-\plantumlfile Book.puml "Диаграмма классов Book и Author"
+![Диаграмма классов Book и Author](uml/Book.png)
 
-Исходник диаграммы — `uml/Book.puml` (PlantUML). Связь Book — Author — **композиция**: объект
+Исходник диаграммы — `uml/Book.puml` (PlantUML), картинка `uml/Book.png` получена командой
+`java -jar plantuml.jar -charset UTF-8 -tpng uml\Book.puml`. Связь Book — Author — **композиция**: объект
 Author хранится внутри объекта Book как поле `author_` и живёт столько же, сколько книга.
 
 Диаграмма показывает класс целиком, как он спроектирован. Реализация идёт по частям:

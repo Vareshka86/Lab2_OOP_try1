@@ -59,11 +59,10 @@ GENERATE_TREEVIEW      = YES   # Дерево навигации слева
 HAVE_DOT               = NO    # Graphviz не используется
 
 #---------------------------------------------------------------------------
-# Диаграммы классов PlantUML (исходники - папка uml).
-# Graphviz не используется: PlantUML раскладывает диаграммы классов сам.
+# Диаграммы классов: исходники PlantUML и готовые картинки - папка uml.
+# Картинки рисуются командой java -jar plantuml.jar -charset UTF-8 -tpng uml\*.puml,
+# Doxygen только вставляет их, поэтому для сборки документации PlantUML не нужен.
 #---------------------------------------------------------------------------
-PLANTUML_JAR_PATH      = D:/Tools/plantuml/plantuml.jar
-PLANTUMLFILE_DIRS      = uml   # для команды \plantumlfile Имя.puml
 IMAGE_PATH             = uml   # для картинок uml/*.png на страницах
 # HAVE_DOT             = YES   # графы наследования - нужен Graphviz
 # DOT_PATH             = <папка с dot.exe>
