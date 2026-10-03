@@ -17,6 +17,7 @@ class Book {
   + Book()
   + Book(title : std::string, author : Author, year : int)
   + Book(other : Book)
+  + operator=(other : Book) : Book
   + ~Book()
   .. методы чтения (const) ..
   + getTitle() : std::string
